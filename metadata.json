@@ -1,0 +1,6 @@
+{
+  "name": "Vexorion",
+  "description": "Vexorion application with interactive UI, data loader, and test suite.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

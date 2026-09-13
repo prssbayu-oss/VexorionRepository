@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <defs>
+        <linearGradient id="vexGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6C5CE7"/>
+            <stop offset="100%" stop-color="#a29bfe"/>
+        </linearGradient>
+    </defs>
+    <rect width="64" height="64" rx="14" fill="#0f0f1a"/>
+    <path d="M16 18 L32 48 L48 18 L40 18 L32 36 L24 18 Z"
+          fill="url(#vexGrad)"/>
+    <circle cx="50" cy="14" r="3" fill="#a29bfe"/>
+</svg>

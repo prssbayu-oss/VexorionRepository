@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400">
+    <defs>
+        <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6C5CE7"/>
+            <stop offset="100%" stop-color="#a29bfe"/>
+        </linearGradient>
+        <radialGradient id="heroGlow" cx="50%" cy="50%">
+            <stop offset="0%" stop-color="#6C5CE7" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#6C5CE7" stop-opacity="0"/>
+        </radialGradient>
+    </defs>
+
+    <circle cx="300" cy="200" r="180" fill="url(#heroGlow)"/>
+
+    <path d="M220 120 L300 320 L380 120 L340 120 L300 240 L260 120 Z"
+          fill="url(#heroGrad)"/>
+
+    <circle cx="420" cy="120" r="10" fill="#a29bfe"/>
+    <circle cx="180" cy="280" r="6" fill="#6C5CE7" opacity="0.7"/>
+    <circle cx="440" cy="280" r="4" fill="#a29bfe" opacity="0.5"/>
+    <circle cx="160" cy="100" r="5" fill="#6C5CE7" opacity="0.6"/>
+</svg>

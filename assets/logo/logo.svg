@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80">
+    <defs>
+        <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#6C5CE7"/>
+            <stop offset="100%" stop-color="#a29bfe"/>
+        </linearGradient>
+        <filter id="logoGlow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <g filter="url(#logoGlow)">
+        <path d="M20 24 L40 56 L60 24 L52 24 L40 44 L28 24 Z"
+              fill="url(#logoGrad)"/>
+    </g>
+
+    <text x="80" y="52"
+          font-family="Arial, sans-serif"
+          font-size="36"
+          font-weight="bold"
+          letter-spacing="6"
+          fill="#ffffff">
+        VEXORION
+    </text>
+</svg>

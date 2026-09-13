@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080"
+     preserveAspectRatio="xMidYMid slice">
+    <defs>
+        <radialGradient id="bgGrad1" cx="20%" cy="20%">
+            <stop offset="0%" stop-color="#6C5CE7" stop-opacity="0.4"/>
+            <stop offset="100%" stop-color="#0f0f1a" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="bgGrad2" cx="80%" cy="80%">
+            <stop offset="0%" stop-color="#a29bfe" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#0f0f1a" stop-opacity="0"/>
+        </radialGradient>
+        <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
+            <path d="M 80 0 L 0 0 0 80" fill="none" stroke="#ffffff" stroke-width="1"/>
+        </pattern>
+    </defs>
+
+    <rect width="1920" height="1080" fill="#0f0f1a"/>
+    <rect width="1920" height="1080" fill="url(#bgGrad1)"/>
+    <rect width="1920" height="1080" fill="url(#bgGrad2)"/>
+    <rect width="1920" height="1080" fill="url(#grid)" opacity="0.06"/>
+</svg>
