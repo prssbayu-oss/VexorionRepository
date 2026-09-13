@@ -132,7 +132,7 @@ export function run() {
         assert(!isNonEmptyArray([]));
     });
 
-    // Nil
+    // Nil checks
     test("isUndefined", () => {
         assert(isUndefined(undefined));
         assert(!isUndefined(null));
@@ -153,7 +153,7 @@ export function run() {
         assert(!isNil(false));
     });
 
-    // Primitive lain
+    // Other primitives
     test("isBoolean", () => {
         assert(isBoolean(true));
         assert(isBoolean(false));
@@ -172,7 +172,7 @@ export function run() {
         assert(!isSymbol("symbol"));
     });
 
-    // Number lanjutan
+    // Extended number checks
     test("isInteger", () => {
         assert(isInteger(42));
         assert(isInteger(-10));
@@ -195,7 +195,7 @@ export function run() {
         assert(!isFinite(-Infinity));
     });
 
-    // Object lanjutan
+    // Extended object & array checks
     test("isPlainObject", () => {
         assert(isPlainObject({}));
         assert(isPlainObject({ a: 1 }));
@@ -211,7 +211,7 @@ export function run() {
         assert(!isEmptyArray(""));
     });
 
-    // Vexorion vnode
+    // Vexorion VNode
     test("isVNode", () => {
         const vnode = { type: "div", children: [] };
         assert(isVNode(vnode));
@@ -229,7 +229,7 @@ export function run() {
         assert(!isPromise(null));
     });
 
-    // Comparator
+    // Deep equality comparator
     test("isEqual deep comparison", () => {
         assert(isEqual(1, 1));
         assert(isEqual("a", "a"));

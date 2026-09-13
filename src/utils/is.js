@@ -2,7 +2,7 @@
 // Re-export + extend validator from scripts/.
 // Do NOT duplicate what already exists.
 
-// ─── Warisan dari scripts/ ──────────────────────────────────
+// ─── Re-exports from scripts/ ──────────────────────────────
 export {
     isString,
     isEmpty,
@@ -18,25 +18,25 @@ export {
     isNonEmptyArray
 } from "../../scripts/helpers/validator.js";
 
-// ─── Tambahan yang belum ada di scripts/ ────────────────────
+// ─── Additional utilities not in scripts/ ──────────────────
 
-// Nil
+// Nil checks
 export const isUndefined = (v) => v === undefined;
 export const isNull      = (v) => v === null;
 export const isNil       = (v) => v === null || v === undefined;
 
-// Primitive lain
+// Other primitives
 export const isBoolean = (v) => typeof v === "boolean";
 export const isFunction = (v) => typeof v === "function";
 export const isSymbol   = (v) => typeof v === "symbol";
 
-// Number lanjutan
+// Extended number checks
 export const isInteger = (v) => Number.isInteger(v);
 export const isFloat   = (v) => typeof v === "number" && !Number.isInteger(v);
 export const isNaN     = (v) => Number.isNaN(v);
 export const isFinite  = (v) => Number.isFinite(v);
 
-// Object lanjutan
+// Extended object & array checks
 export const isPlainObject = (v) => {
     if (Object.prototype.toString.call(v) !== "[object Object]") return false;
     const proto = Object.getPrototypeOf(v);
@@ -44,7 +44,7 @@ export const isPlainObject = (v) => {
 };
 export const isEmptyArray = (v) => Array.isArray(v) && v.length === 0;
 
-// Vexorion
+// Vexorion VNode
 export const isVNode = (v) =>
     v !== null && typeof v === "object" &&
     typeof v.type === "string" && Array.isArray(v.children);
@@ -54,7 +54,7 @@ export const isPromise = (v) =>
     v !== null && typeof v === "object" &&
     typeof v.then === "function" && typeof v.catch === "function";
 
-// Comparator
+// Deep equality comparator
 export const isEqual = (a, b) => {
     if (a === b) return true;
     if (typeof a !== typeof b) return false;
