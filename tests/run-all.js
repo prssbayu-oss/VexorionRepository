@@ -9,7 +9,8 @@ const unitDir = join(__dirname, "unit");
 async function main() {
     console.log("🚀 Running all unit tests...\n");
 
-    const files = (await readdir(unitDir))
+    const files = (await readdir(unitDir, { recursive: true }))
+        .map(f => f.replace(/\\/g, "/"))
         .filter(f => f.endsWith(".test.js"))
         .sort();
 
