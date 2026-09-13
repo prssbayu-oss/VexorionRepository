@@ -4,35 +4,135 @@ import {
 } from "../../_assert.js";
 
 // Setup mocks for DOM and Event in Node.js environment
-class MockNode {}
-class MockElement extends MockNode {}
-class MockSVGElement extends MockElement {}
-class MockEvent {}
+class MockElement {
+    constructor() {
+        this.nodeType = 1;
+    }
+}
 
-globalThis.Node = MockNode;
 globalThis.HTMLElement = MockElement;
-globalThis.SVGElement = MockSVGElement;
-globalThis.Event = MockEvent;
+globalThis.Element = MockElement;
+globalThis.document = {
+    getElementById(id) {
+        return id === "existing-id" ? new MockElement() : null;
+    }
+};
 
 import {
-    isUndefined, isNull, isNil, isDefined,
-    isString, isNumber, isBoolean, isSymbol, isBigInt,
-    isFunction, isPrimitive, isTruthy, isFalsy,
-    isInteger, isFloat, isPositive, isNegative, isNaN, isFinite,
-    isObject, isPlainObject, isArray,
-    isNonEmptyArray, isEmptyArray,
-    isEmpty, isEmptyString, isEmptyObject,
-    isElement, isNode, isSVG,
+    // Re-exports from validator.js
+    isString,
+    isEmpty,
+    isLengthValid,
+    isNumber,
+    isPositive,
+    isInRange,
+    isElement,
+    elementExists,
+    isObject,
+    isEmptyObject,
+    isArray,
+    isNonEmptyArray,
+
+    // Additions
+    isUndefined,
+    isNull,
+    isNil,
+    isBoolean,
+    isFunction,
+    isSymbol,
+    isInteger,
+    isFloat,
+    isNaN,
+    isFinite,
+    isPlainObject,
+    isEmptyArray,
     isVNode,
-    isEvent, isPromise,
-    isEqual, isEqualShallow
+    isPromise,
+    isEqual
 } from "../../../../src/utils/is.js";
 
 export function run() {
     reset();
     banner("src/utils/is.test.js");
 
-    // Undefined / null
+    // Re-exports from validator.js
+    test("isString", () => {
+        assert(isString("hello"));
+        assert(isString(""));
+        assert(!isString(123));
+        assert(!isString(null));
+    });
+
+    test("isEmpty", () => {
+        assert(isEmpty(""));
+        assert(isEmpty("   "));
+        assert(isEmpty(null));
+        assert(isEmpty(undefined));
+        assert(!isEmpty("content"));
+    });
+
+    test("isLengthValid", () => {
+        assert(isLengthValid("test", 1, 10));
+        assert(!isLengthValid("test", 5, 10));
+        assert(!isLengthValid("", 1, 10));
+    });
+
+    test("isNumber", () => {
+        assert(isNumber(123));
+        assert(isNumber(0));
+        assert(isNumber(-4.5));
+        assert(!isNumber(NaN));
+        assert(!isNumber("123"));
+    });
+
+    test("isPositive", () => {
+        assert(isPositive(5));
+        assert(!isPositive(0));
+        assert(!isPositive(-5));
+    });
+
+    test("isInRange", () => {
+        assert(isInRange(5, 1, 10));
+        assert(isInRange(1, 1, 10));
+        assert(isInRange(10, 1, 10));
+        assert(!isInRange(0, 1, 10));
+        assert(!isInRange(15, 1, 10));
+    });
+
+    test("isElement", () => {
+        const el = new MockElement();
+        assert(isElement(el));
+        assert(!isElement({}));
+        assert(!isElement(null));
+    });
+
+    test("elementExists", () => {
+        assert(elementExists("existing-id"));
+        assert(!elementExists("non-existing-id"));
+    });
+
+    test("isObject", () => {
+        assert(isObject({}));
+        assert(isObject({ a: 1 }));
+        assert(!isObject(null));
+        assert(!isObject("str"));
+    });
+
+    test("isEmptyObject", () => {
+        assert(isEmptyObject({}));
+        assert(!isEmptyObject({ a: 1 }));
+        assert(!isEmptyObject(null));
+    });
+
+    test("isArray and isNonEmptyArray", () => {
+        assert(isArray([1, 2]));
+        assert(isArray([]));
+        assert(!isArray({}));
+        assert(isNonEmptyArray([1]));
+        assert(!isNonEmptyArray([]));
+    });
+
+    // Nil
     test("isUndefined", () => {
         assert(isUndefined(undefined));
         assert(!isUndefined(null));
@@ -53,45 +153,12 @@ export function run() {
         assert(!isNil(false));
     });
 
-    test("isDefined", () => {
-        assert(isDefined(0));
-        assert(isDefined(""));
-        assert(isDefined(false));
-        assert(!isDefined(null));
-        assert(!isDefined(undefined));
-    });
-
-    // Primitives
-    test("isString", () => {
-        assert(isString("hello"));
-        assert(isString(""));
-        assert(!isString(123));
-        assert(!isString(null));
-    });
-
-    test("isNumber", () => {
-        assert(isNumber(123));
-        assert(isNumber(0));
-        assert(isNumber(-4.5));
-        assert(!isNumber(NaN));
-        assert(!isNumber("123"));
-    });
-
+    // Primitive lain
     test("isBoolean", () => {
         assert(isBoolean(true));
         assert(isBoolean(false));
         assert(!isBoolean(1));
         assert(!isBoolean("true"));
-    });
-
-    test("isSymbol", () => {
-        assert(isSymbol(Symbol("test")));
-        assert(!isSymbol("symbol"));
-    });
-
-    test("isBigInt", () => {
-        assert(isBigInt(10n));
-        assert(!isBigInt(10));
     });
 
     test("isFunction", () => {
@@ -100,31 +167,12 @@ export function run() {
         assert(!isFunction({}));
     });
 
-    test("isPrimitive", () => {
-        assert(isPrimitive("str"));
-        assert(isPrimitive(123));
-        assert(isPrimitive(true));
-        assert(isPrimitive(null));
-        assert(isPrimitive(undefined));
-        assert(isPrimitive(Symbol("s")));
-        assert(isPrimitive(10n));
-        assert(!isPrimitive({}));
-        assert(!isPrimitive([]));
-        assert(!isPrimitive(() => {}));
+    test("isSymbol", () => {
+        assert(isSymbol(Symbol("test")));
+        assert(!isSymbol("symbol"));
     });
 
-    test("isTruthy and isFalsy", () => {
-        assert(isTruthy(1));
-        assert(isTruthy("yes"));
-        assert(isTruthy({}));
-        assert(isFalsy(0));
-        assert(isFalsy(""));
-        assert(isFalsy(null));
-        assert(isFalsy(undefined));
-        assert(isFalsy(false));
-    });
-
-    // Numbers
+    // Number lanjutan
     test("isInteger", () => {
         assert(isInteger(42));
         assert(isInteger(-10));
@@ -139,15 +187,6 @@ export function run() {
         assert(!isFloat("3.14"));
     });
 
-    test("isPositive and isNegative", () => {
-        assert(isPositive(5));
-        assert(!isPositive(0));
-        assert(!isPositive(-5));
-        assert(isNegative(-5));
-        assert(!isNegative(0));
-        assert(!isNegative(5));
-    });
-
     test("isNaN and isFinite", () => {
         assert(isNaN(NaN));
         assert(!isNaN(123));
@@ -156,15 +195,7 @@ export function run() {
         assert(!isFinite(-Infinity));
     });
 
-    // Objects / arrays
-    test("isObject", () => {
-        assert(isObject({}));
-        assert(isObject({ a: 1 }));
-        assert(!isObject([]));
-        assert(!isObject(null));
-        assert(!isObject("obj"));
-    });
-
+    // Object lanjutan
     test("isPlainObject", () => {
         assert(isPlainObject({}));
         assert(isPlainObject({ a: 1 }));
@@ -173,53 +204,11 @@ export function run() {
         assert(!isPlainObject(new Date()));
     });
 
-    test("isArray, isNonEmptyArray, isEmptyArray", () => {
-        assert(isArray([1, 2]));
-        assert(isNonEmptyArray([1]));
-        assert(!isNonEmptyArray([]));
+    test("isEmptyArray", () => {
         assert(isEmptyArray([]));
         assert(!isEmptyArray([1]));
-    });
-
-    // Empty checks
-    test("isEmpty", () => {
-        assert(isEmpty(null));
-        assert(isEmpty(undefined));
-        assert(isEmpty(""));
-        assert(!isEmpty("hello"));
-        assert(isEmpty([]));
-        assert(!isEmpty([1]));
-        assert(isEmpty({}));
-        assert(!isEmpty({ a: 1 }));
-        assert(!isEmpty(123));
-    });
-
-    test("isEmptyString", () => {
-        assert(isEmptyString(""));
-        assert(isEmptyString("   "));
-        assert(!isEmptyString("abc"));
-        assert(!isEmptyString(null));
-    });
-
-    test("isEmptyObject", () => {
-        assert(isEmptyObject({}));
-        assert(!isEmptyObject({ a: 1 }));
-        assert(!isEmptyObject([]));
-    });
-
-    // DOM / Node / SVG
-    test("isElement, isNode, isSVG", () => {
-        const el = new MockElement();
-        const node = new MockNode();
-        const svg = new MockSVGElement();
-
-        assert(isElement(el));
-        assert(isElement(svg));
-        assert(!isElement(node));
-        assert(isNode(node));
-        assert(isNode(el));
-        assert(isSVG(svg));
-        assert(!isSVG(el));
+        assert(!isEmptyArray({}));
+        assert(!isEmptyArray(""));
     });
 
     // Vexorion vnode
@@ -231,18 +220,16 @@ export function run() {
         assert(!isVNode(null));
     });
 
-    // Event and Promise
-    test("isEvent and isPromise", () => {
-        assert(isEvent(new MockEvent()));
-        assert(!isEvent({}));
-
-        const promise = { then: () => {}, catch: () => {} };
-        assert(isPromise(promise));
+    // Promise / async
+    test("isPromise", () => {
+        const promiseObj = { then: () => {}, catch: () => {} };
+        assert(isPromise(promiseObj));
         assert(isPromise(Promise.resolve()));
         assert(!isPromise({}));
+        assert(!isPromise(null));
     });
 
-    // Comparators
+    // Comparator
     test("isEqual deep comparison", () => {
         assert(isEqual(1, 1));
         assert(isEqual("a", "a"));
@@ -250,16 +237,8 @@ export function run() {
         assert(!isEqual([1, 2], [1, 3]));
         assert(isEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 2 } }));
         assert(!isEqual({ a: 1 }, { a: 2 }));
-    });
-
-    test("isEqualShallow comparison", () => {
-        assert(isEqualShallow(1, 1));
-        assert(isEqualShallow({ a: 1, b: 2 }, { a: 1, b: 2 }));
-        const inner = { c: 3 };
-        assert(isEqualShallow({ a: inner }, { a: inner }));
-        assert(!isEqualShallow({ a: { c: 3 } }, { a: { c: 3 } }));
-        assert(!isEqualShallow({ a: 1 }, { a: 1, b: 2 }));
-        assert(!isEqualShallow({ a: 1 }, "not an object"));
+        assert(!isEqual(1, "1"));
+        assert(!isEqual(null, undefined));
     });
 
     const result = summary();
